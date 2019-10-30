@@ -1,0 +1,328 @@
+<style>
+    html {
+	color: #333;
+	font:normal 14px '微软雅黑','Microsoft YaHei';
+}
+body,ul,ol,p,h1,h2,h3 {
+	margin: 0;
+	padding: 0;
+}
+ul,ol {
+	list-style: none;
+}
+a {
+	text-decoration: none;
+	color: #333;
+}
+    h1{
+    	text-align: center;
+    }
+
+	.table {
+			border-collapse: collapse;
+			width: 100%;
+			text-align: center;
+		}
+		.table td {
+			border: 1px solid #ccc;
+			line-height: 2em;
+		}
+		.none {
+			display: none;
+		}
+		
+		
+</style>
+<link rel="stylesheet" href="./images/iconfont.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="./bootstrap/css/bootstrap.css">
+	<link href="https://cdn.bootcss.com/font-awesome/5.10.2/css/all.css" rel="stylesheet">
+
+	<script type="text/javascript" src="./js/jquery-3.4.1.min.js"></script>
+	<script type="text/javascript" src="./bootstrap/js/bootstrap.js"></script>
+<script>
+
+	var baseURL = "http://134.175.100.63:6677";
+// 加载数据
+function reloadData(){
+	var url = baseURL+"/customer/findAll";
+	$.get(url,function(result){
+		if(result.status === 200){
+			$("#customer_table tbody").empty();
+			result.data.forEach(function(item){
+				$(`<tr>
+					<td><input type="checkbox" value="`+item.id+`"></td>
+					<td>`+item.id+`</td>
+		<td>`+item.telephone+`</td>
+		<td>`+item.password+`</td>
+		<td>`+item.realname+`</td>
+		<td>`+item.status+`</td>
+		<td>`+item.photo+`</td>
+					<td>
+						<i class="fa fa-trash text-danger mr-3" id="del"></i>
+						<i class="fa fa-edit text-primary" id="add"></i>
+					</td>
+				</tr>`).appendTo("#customer_table tbody");
+			});
+		}
+
+	});
+}
+        	//刷新
+	function renovates(){
+    window.self.location.reload();
+}
+
+		// 关闭模态框
+		function closeCustomerModal(){
+			$("#customerModal").modal("hide");
+			document.getElementById("customer_form").reset();
+		}
+		// 弹出提示框
+		function toast(msg){
+			$(".toast .toast-body").text(msg);
+			$(".toast").toast("show")
+		}
+
+		// 提交表单
+		function submitCustomer(){
+			// 1. 获取参数
+			var id = $("#customer_form input[name=id]").val();
+			var telephone = $("#customer_form input[name=telephone]").val();
+			var password = $("#customer_form input[name=password]").val();
+			var realname = $("#customer_form input[name=realname]").val();
+			
+			
+			// 参数校验
+			// 2. 调用后台接口保存
+			var url = baseURL+"/customer/saveOrUpdate"
+			var data = {
+				id:id,
+				telephone:telephone,
+				password:password,
+				realname:realname
+			}
+			$.post(url,data,function(result){
+				if(result.status === 200){
+					// 3. 关闭模态
+					closeCustomerModal();
+					// 4. 刷新数据
+					reloadData()
+					// 5. 提示录入成功
+					toast("录入成功");
+				} else {
+					alert("接口异常！");
+				}
+			});
+			
+		}
+// 文档加载完毕之后执行
+$(function(){
+	// 初始化toast
+			$(".toast").toast({
+				delay:2000
+			});
+	//调用重载数据
+	reloadData();
+	//在此之后添加事件
+
+
+
+	
+	// 为按钮绑定事件
+			$("#btn_add_customer").click(function(){
+				//显示模态框
+				$("#customerModal").modal("show")
+			});
+
+
+			// 为删除和修改绑定事件
+	$("#customer_table").on("click","i",function(event){
+		console.log(this.id)
+		switch(this.id){			
+			case "del":
+				// 获取当前行的id
+				var id = $(this).parents("tr").children().eq(0).find("input").val();
+				// 交互
+				var url = baseURL +"/customer/deleteById"
+				var data = {
+					id:id
+				}
+
+				$.get(url,data,function(result){
+					if(result.status === 200){
+						// 更新页面
+						reloadData();
+					} else {
+						alert(result.message);
+					}
+				});
+				break;
+			case "add":
+			$("#customerModal").modal("show");				
+				break;
+		}
+
+		event.preventDefault();
+	});
+
+
+
+
+	// 为批量删除按钮绑定事件
+	$("#btn_batch_del").click(function(){
+		var ids = 
+		$("#customer_table input:checkbox").filter(":checked")
+
+		.map(function(index,item){
+			return $(item).val();
+			})
+
+		.toArray();
+
+		var data ="";
+		for(var key in ids){
+			var id = ids[key];
+			if(key==0){
+				data+="ids="+id
+			} else {
+				data+="&ids="+id
+			}
+		}
+		if (ids.length==0){
+			alert("请勾选批量删除");
+		}else{
+			console.log(ids.length)
+		}
+
+		$.ajax({
+			url:baseURL+"/customer/batchDelete",
+			method:"post",
+			data:data,
+			success:function(result){
+				// console.log(result);
+                if(result.status === 200){
+					alert("批量删除成功");
+					// 更新页面
+					reloadData();
+				} else {
+					alert(result.message);
+				}
+			}
+		});
+	});
+});
+</script>
+<div class="container-fluid" id="customer">
+<div class="row bg-light"> <!-- 开头 -->
+<div class="mb_nav" id="btl"><i class="iconfont icon-shuxian text-primary mr-2 ml-1"></i>顾客管理</div>
+<!-- 搜素栏 -->
+<form class="form-inline my-2 my-lg-0 ml-auto">
+	<input type="search" class="form-control" placeholder="请输入顾客id" aria-laber="Search">
+	<button class="btn btn-outline-success my-2 my-sm-0" type="submit">搜索顾客</button> 
+</form>
+
+<i class="iconfont icon-shuaxin text-success ml-auto mr-1" onclick="renovates()"></i>
+<button class="btn btn-outline-success bg-light col-1" type="button" id="btn_add_customer">添加顾客信息</button>
+<button class="btn btn-outline-success bg-light col-1" type="button" id="btn_batch_del">批量删除</button>
+<button class="btn btn-outline-success bg-light col-1" type="submit" id="btn_import">批量导入</button> 
+<button class="btn btn-outline-success bg-light col-1" type="submit" id="btn_export">批量导出</button>
+			<!-- 开头 -->
+
+	
+	
+	
+		
+	
+
+    <!-- 表格 -->
+	<table  class="table" id="customer_table">
+		<thead class="thead-info">
+			<tr>
+			<th>请选择</th>
+		    <th>顾客编号</th>
+			<th>手机号</th>
+			<th>密码</th>
+			<th>真实姓名</th>
+			<th>状态</th>
+			<th>照片</th>
+			<th width="100px">操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			
+		</tbody>
+	</table><!-- 表格 -->
+	<!-- 模态框 -->
+<div class="modal fade" id="customerModal" tabindex="-1">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">添加顾客信息</h5>
+        <button type="button" class="close" onclick="closeCustomerModal()">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+  <!-- 表单 -->
+		<form action="/register" id="customer_form">
+		<!-- id -->
+			<div class="form-group row">
+				<label for="input_id" class="col-2 text-right">id</label>
+				<div class="col-10" >
+					<input id="input_id" name="id" type="text" class="form-control">
+				</div>
+			</div>
+			<!-- id -->
+			<!-- 手机 -->
+			<div class="form-group row">
+				<label for="input_telephone" class="col-2 text-right">手机号</label>
+				<div class="col-10" >
+					<input id="input_telephone" name="telephone" type="text" class="form-control">
+				</div>
+			</div>
+			<!-- / 手机号 -->
+			<!-- 密码 -->
+			<div class="form-group row">
+				<label for="input_password" class="col-2 text-right">密码</label>
+				<div class="col-10" >
+					<input id="input_password" name="password" type="password" class="form-control">
+				</div>
+			</div>
+			<!-- / 密码 -->
+			<!-- 用户名 -->
+			<div class="form-group row">
+				<label for="input_realname" class="col-2 text-right">姓名</label>
+				<div class="col-10" >
+					<input id="input_realname" name="realname" type="text" class="form-control">
+				</div>
+			</div>
+			<!-- / 用户名 -->
+			
+			
+			
+		</form>
+		<!-- / 表单 -->     
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeCustomerModal()">Close</button>
+        <button type="button" class="btn btn-primary" onclick="submitCustomer()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- / 模态框 -->
+<!-- 提示框 -->
+<div class="toast" style="position: absolute;top: 1em;right: 1em">
+  <div class="toast-header">
+    <i class="fa fa-bell text-success mr-5"></i>
+    <strong class="mr-auto">success</strong>
+    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">
+      <span>&times;</span>
+    </button>
+  </div>
+  <div class="toast-body"> </div> 
+</div>
+
+	</div><!-- 结尾 -->

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>平安通后台服务管理</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="./bootstrap/css/bootstrap.css">
+	<link href="https://cdn.bootcss.com/font-awesome/5.10.2/css/all.css" rel="stylesheet">
+	<script type="text/javascript" src="./js/jquery-3.4.1.min.js"></script>
+	<script type="text/javascript" src="./bootstrap/js/bootstrap.js"></script>
+	<script type="text/javascript" src="./js/index.js"></script>
+	<link rel="stylesheet" href="./images/iconfont.css">
+	<style>
+		
+		ul {
+			margin: 0;
+			padding: 0;
+			list-style: none;
+		}
+		#ftitlt{
+			font-size: 25px;
+		}
+		
+       .left-nav > .title {
+	font-size: 24px;	
+	text-align: center;	
+	border-bottom: 1px solid black
+}
+
+ul.left_nav > li{
+	text-align: center;
+	line-height: 36px;
+	border-bottom: 1px solid #ededed
+}
+ul.left_nav > li.current{
+	background-color: #ededed;
+}
+ul.left_nav > li.current a{
+	color: #333;
+}
+#btl{
+	font-size: 20px;
+}
+ ul.navbar-nav > li.dropdown:hover > div {
+		display: block;
+	}
+
+
+</style>
+</head>
+<body>
+<div class="container-fluid"> <!-- 用于支持响应式布局的容器 --><!-- 全局 -->
+<div class="row header ">   <!--  快速创建网格布局 --><!-- 开头 -->
+<div class="col bg-light">
+<!-- 标题栏 -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<!-- 标题左边 logo和题目 -->
+<i class="iconfont icon-liebiaolan mr-2"></i>
+<a href="#" class="navbar-brand" id="ftitlt" onclick="newhome()">平安通后台管理</a>
+<!-- 标题中间 -->
+<div class="collapse navbar-collapse" id="navbarSupportedContent">
+<!-- 搜素栏 -->
+<form class="form-inline my-2 my-lg-0 ml-auto">
+	<input type="search" class="form-control" placeholder="Search" aria-laber="Search">
+	<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> 
+</form>
+<!-- 标题 右边 项目 -->
+<ul class="navbar-nav">
+<!-- 费用 -->
+	<li class="nav-item dropdown">
+	<a href="#" class="nav-link dropdown-toggle " id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">费用</a>
+	<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+	    <a class="dropdown-item" href="#">充值</a>
+		<a class="dropdown-item" href="#">订单</a>
+		<a class="dropdown-item" href="#">发票</a>
+		<a class="dropdown-item" href="#">消费记录</a>
+		<a class="dropdown-item" href="#">续费记录</a>
+		<div class="dropdown-divider"></div>
+		<a class="dropdown-item" href="#">进入费用中心</a>
+		</div>
+	</li>
+	<!-- 工单 -->
+	<li class="nav-item dropdown">
+	<a href="#" class="nav-link dropdown-toggle " id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">工单</a>
+	<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+	    <a class="dropdown-item" href="#">我的工单</a>
+		<a class="dropdown-item" href="#">提交工单</a>		
+		</div>
+	</li>
+	<!-- 备案 -->
+	<li class="nav-item dropdown">
+	<a href="#" class="nav-link dropdown-toggle " id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">备案</a>
+	<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+	    <a class="dropdown-item" href="#">备案服务号申请</a>
+		<a class="dropdown-item" href="#">备案服务号管理</a>
+		<a class="dropdown-item" href="#">备案专区</a>
+		<a class="dropdown-item" href="#">ICP备案系统</a>		
+		</div>		
+	</li>
+	<!-- 企业 -->
+	<li class="nav-item dropdown">
+	<a href="#" class="nav-link dropdown-toggle " id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">企业</a>
+	<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+	    <a class="dropdown-item" href="#">资源管理</a>
+		<a class="dropdown-item" href="#">财务管理</a>
+		<a class="dropdown-item" href="#">人员权限管理</a>
+		<a class="dropdown-item" href="#">分销平台</a>		
+		</div>	
+	</li>
+	<!-- 支持与服务 -->
+	<li class="nav-item dropdown">
+		<a href="#" class="nav-link dropdown-toggle " id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">支持与服务</a>
+
+		<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+	    <a class="dropdown-item" href="#">帮助与文档</a>
+	    <a class="dropdown-item" href="#">云分期</a>
+	    <a class="dropdown-item" href="#">支持计划</a>
+
+
+		<a class="dropdown-item" href="#">专家服务</a>
+		<div class="dropdown-divider"></div>
+		<a class="dropdown-item" href="#">提交建议</a>
+	    <a class="dropdown-item" href="#">论坛</a>
+	    <a class="dropdown-item" href="#">博客</a>
+	    <a class="dropdown-item" href="#">社区求助</a>
+
+		</div>
+	</li>
+	<!-- 站内信息通知 -->
+	<li class="nav-item">
+		<a href="#" class="nav-link">站内信息通知</a>
+	</li>
+	<!-- 铃铛 -->
+	<li class="nav-item">
+	       <i class="iconfont icon-xiaoxitixing text-dark mr-2 ml-1"></i>
+	</li>
+	<!-- 身份证 -->
+	<li class="nav-item">
+		<i class="iconfont icon-shenfenzheng text-dark mr-2 ml-1"></i>
+	</li>
+	<!-- 家 -->
+	<li class="nav-item">
+		<i class="iconfont icon-fl-jia text-dark mr-2 ml-1" onclick="newhome()"></i>
+	</li>	
+	<!-- 简体中文 -->
+	<li class="nav-item">
+		<a href="#" class="nav-link">简体中文</a>
+	</li>
+				<!-- 登录 -->
+	<li class="nav-item">
+		<i class="iconfont icon-denglu text-dark mr-2 ml-1"></i>
+	</li>
+	</ul>
+</div>	<!-- 标题右边 -->
+
+</nav><!-- 标题栏 -->
+
+
+</div><!-- 网格布局 -->
+
+	
+</div><!-- 开头结束 -->
+
+
+<!-- 开头底下开始 -->
+
+<div class="row content"><!-- 底部容器 -->
+<div class="col-1 bg-light left-nav"><!--  左边导航栏 -->
+<div class="title" onclick="newhome()">管理中心</div>
+<br>
+<br>
+<ul class="navbar-nav left_nav">
+    <!-- 顾客管理 -->
+	<li class="nav-item" url="./pages/customer.html">
+	    
+		<a href="javascript:void(0)" class="nav-link"><i class="iconfont icon-tubiao_guke text-dark mr-2 ml-1"></i>顾客管理</a>
+	</li>
+	<!-- 员工管理 -->
+	<li class="nav-item" url="./pages/waiter.html">
+		<a href="javascript:void(0)" class="nav-link"><i class="iconfont icon-iconyggl text-dark mr-2 ml-1"></i>员工管理</a>
+	</li>
+	<!-- 分类管理 -->
+	<li class="nav-item" url="./pages/category.html">
+		<a href="javascript:void(0)" class="nav-link"><i class="iconfont icon-fenlei text-dark mr-2 ml-1"></i>分类管理</a>
+	</li>
+	<!-- 产品管理 -->
+	<li class="nav-item" url="./pages/product.html">
+		<a href="javascript:void(0)" class="nav-link"><i class="iconfont icon-product text-dark mr-2 ml-1"></i>产品管理</a>
+	</li>
+	<!-- 订单管理 -->
+	<li class="nav-item" url="./pages/order.html">
+		<a href="javascript:void(0)" class="nav-link"><i class="iconfont icon-dingdan text-dark mr-2 ml-1"></i>订单管理</a>
+	</li>
+	<!-- 评论管理 -->
+	<li class="nav-item" url="./pages/comment.html">
+		<a href="javascript:void(0)" class="nav-link"><i class="iconfont icon-pinglun text-dark mr-2 ml-1"></i>评论管理</a>
+	</li>
+	</ul>
+
+	
+</div><!--  左边导航栏 -->
+<div class="col-11 ml-auto right-nav"><!-- 右侧内容 -->
+	<!-- <div class="row bg-light"> 包裹
+	<div class="mb_nav" id="btl">管理中心</div>
+	<button class="btn btn-outline-success ml-auto bg-light col-1" type="submit">新建</button> 
+	</div>包裹 -->
+	<div class="col-fluid" id="wrapper">
+		
+	</div>
+	
+</div><!-- 右侧内容 -->
+	
+</div><!-- 底部容器 -->
+
+
+
+
+
+
+
+
+	
+</div><!-- 全局 -->
+
+
+	
+</body>
+</html>

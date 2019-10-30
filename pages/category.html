@@ -1,0 +1,327 @@
+<style>
+    html {
+	color: #333;
+	font:normal 14px '微软雅黑','Microsoft YaHei';
+}
+body,ul,ol,p,h1,h2,h3 {
+	margin: 0;
+	padding: 0;
+}
+ul,ol {
+	list-style: none;
+}
+a {
+	text-decoration: none;
+	color: #333;
+}
+    h1{
+    	text-align: center;
+    }
+
+	.table {
+			border-collapse: collapse;
+			width: 100%;
+			text-align: center;
+		}
+		.table td {
+			border: 1px solid #ccc;
+			line-height: 2em;
+		}
+		.none {
+			display: none;
+		}
+		
+		
+</style>
+<meta charset="UTF-8">
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.bootcss.com/font-awesome/5.10.2/css/all.css" rel="stylesheet">
+<script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+<script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="./images/iconfont.css">
+
+<script>
+
+	var baseURL = "http://134.175.100.63:6677";
+// 加载数据
+
+
+function reloadData(){
+	var url = baseURL+"/category/findAll";
+	$.get(url,function(response,status){
+		//1. 将tbody清空
+		$("#category_table tbody").empty();
+		//2. 追加新的值
+		response.data.forEach(function(item){
+			var newTr = $(`<tr>
+				<td><input type="checkbox" value="`+item.id+`"></td>
+				<td>`+item.id+`</td>
+				<td>`+item.name+`</td>
+				<td>`+item.num+`</td>
+				<td>`+item.parentId+`</td>				
+				<td>					
+				<i class="fa fa-trash text-danger mr-3" id="del"></i>
+				<i class="fa fa-edit text-primary" id="add"></i>
+				</td>
+			</tr>`);
+			$("#category_table").append(newTr)
+		});
+	});
+}
+
+//刷新
+	function renovates(){
+    window.self.location.reload();
+}
+
+// 关闭模态框
+		function closeCategoryModal(){
+			$("#categoryModal").modal("hide");
+			document.getElementById("category_form").reset();
+		}
+		// 弹出提示框
+		function toast(msg){
+			$(".toast .toast-body").text(msg);
+			$(".toast").toast("show")
+		}
+
+		// 提交表单
+		function submitCategory(){
+			// 1. 获取参数
+			var id = $("#category_form input[name=id]").val();
+			var name = $("#category_form  input[name=name]").val();
+			var num = $("#category_form  input[name=num]").val();
+			var parentId = $("#category_form  input[name=parentId]").val();
+			
+			
+			
+			// 参数校验
+			// 2. 调用后台接口保存
+			var url = baseURL+"/category/saveOrUpdate"
+			var data = {
+				id:id,
+				name:name,
+				num:num,
+				parentId:parentId
+				
+			}
+			$.post(url,data,function(result){
+				if(result.status === 200){
+					// 3. 关闭模态
+					closeCategoryModal();
+					// 4. 刷新数据
+					reloadData()
+					// 5. 提示录入成功
+					toast("录入成功");
+				} else {
+					alert("接口异常！");
+				}
+			});
+			
+		}
+// 文档加载完毕之后执行
+$(function(){
+	// 初始化toast
+			$(".toast").toast({
+				delay:2000
+			});
+	//调用重载数据
+	reloadData();
+	//在此之后添加事件
+
+	// 为按钮绑定事件
+			$("#btn_add_category").click(function(){
+				//显示模态框
+				$("#categoryModal").modal("show")
+			
+			});
+
+
+
+	// 为删除和修改绑定事件
+	$("#category_table").on("click","i",function(event){
+		console.log(this.id)
+		switch(this.id){			
+			case "del":
+				// 获取当前行的id
+				var id = $(this).parents("tr").children().eq(0).find("input").val();
+				// 交互
+				var url = baseURL +"/category/deleteById"
+				var data = {
+					id:id
+				}
+
+				$.get(url,data,function(result){
+					if(result.status === 200){
+						// 更新页面
+						reloadData();
+					} else {
+						alert(result.message);
+					}
+				});
+				break;
+			case "add":
+			$("#categoryModal").modal("show");
+				
+				break;
+		}
+
+		event.preventDefault();
+	});
+
+
+
+	// 为批量删除按钮绑定事件
+	$("#btn_batch_del").click(function(){
+		var ids = 
+		$("#category_table input:checkbox").filter(":checked")
+
+		.map(function(index,item){
+			return $(item).val();
+			})
+
+		.toArray();
+
+		var data ="";
+		for(var key in ids){
+			var id = ids[key];
+			if(key==0){
+				data+="ids="+id
+			} else {
+				data+="&ids="+id
+			}
+		}
+		if (ids.length==0){
+			alert("请勾选批量删除");
+		}else{
+			console.log(ids.length)
+		}
+		$.ajax({
+			url:baseURL+"/category/batchDelete",
+			method:"post",
+			data:data,
+			success:function(result){
+				// console.log(result);
+                if(result.status === 200){
+					alert("批量删除成功");
+					// 更新页面
+					reloadData();
+				} else {
+					alert(result.message);
+				}
+			}
+		})
+	})
+
+
+
+
+
+})
+</script>
+
+<div class="container-fluid" id="category">
+<div class="row bg-light"> <!-- 开头 -->
+	<div class="mb_nav" id="btl"><i class="iconfont icon-shuxian text-primary mr-2 ml-1"></i>分类管理</div>
+	<!-- 搜素栏 -->
+<form class="form-inline my-2 my-lg-0 ml-auto">
+	<input type="search" class="form-control" placeholder="请输入分类信息id" aria-laber="Search">
+	<button class="btn btn-outline-success my-2 my-sm-0" type="submit">搜索分类信息</button> 
+</form>
+
+<i class="iconfont icon-shuaxin text-success ml-auto mr-1" onclick="renovates()"></i>
+<button class="btn btn-outline-success bg-light col-1" type="button" id="btn_add_category">添加分类信息</button>
+<button class="btn btn-outline-success bg-light col-1" type="button" id="btn_import">批量导入</button> 
+<button class="btn btn-outline-success bg-light col-1" type="button" id="btn_batch_del">批量删除</button>
+<button class="btn btn-outline-success bg-light col-1" type="button" id="btn_export">导出</button>
+
+			<!-- 开头 -->
+	<table  class="table table-bordered" id="category_table">
+		<thead class="thead-info">
+			<tr>
+			<th>请选择</th>
+		    <th>分类信息id</th>
+			<th>分类名称</th>
+			<th>编号</th>
+			<th>服务编号</th>
+			<th width="100px">操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			
+		</tbody>
+	</table>
+	<!-- 模态框 -->
+<div class="modal fade" id="categoryModal" tabindex="-1">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">修改分类信息</h5>
+        <button type="button" class="close" onclick="closeCategoryModal()">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+  <!-- 表单 -->
+		<form action="/register" id="category_form">
+		<!-- id -->
+			<div class="form-group row">
+				<label for="input_id" class="col-2 text-right">id</label>
+				<div class="col-10" >
+					<input id="input_id" name="id" type="text" class="form-control">
+				</div>
+			</div>
+			<!-- id -->
+			<!-- 用户名 -->
+			<div class="form-group row">
+				<label for="input_name" class="col-2 text-right">分类名称</label>
+				<div class="col-10" >
+					<input id="input_name" name="name" type="text" class="form-control">
+				</div>
+			</div>
+			<!-- / 用户名 -->
+			<!-- 数字 -->
+			<div class="form-group row">
+				<label for="input_num" class="col-2 text-right">编号</label>
+				<div class="col-10" >
+					<input id="input_num" name="num" type="text" class="form-control">
+				</div>
+			</div>
+			<!-- / 数字 -->
+			<!-- 栏目id -->
+			<div class="form-group row">
+				<label for="input_parentId" class="col-2 text-right">分类编号</label>
+				<div class="col-10" >
+					<input id="input_parentId" name="parentId" type="password" class="form-control">
+				</div>
+			</div>
+			<!-- 栏目id -->
+			
+			
+			
+			
+		</form>
+		<!-- / 表单 -->     
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeCategoryModal()">Close</button>
+        <button type="button" class="btn btn-primary" onclick="submitCategory()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- / 模态框 -->
+<!-- 提示框 -->
+<div class="toast" style="position: absolute;top: 1em;right: 1em">
+  <div class="toast-header">
+    <i class="fa fa-bell text-success mr-5"></i>
+    <strong class="mr-auto">success</strong>
+    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">
+      <span>&times;</span>
+    </button>
+  </div>
+  <div class="toast-body"> </div> 
+</div>
+	</div>
